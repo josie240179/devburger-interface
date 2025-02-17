@@ -49,6 +49,14 @@ gap: 50px;
 margin-top: 30px;
 `;
 
+export const VoltarButton = styled(Link)`
+   font-weight: bold;
+   cursor: pointer;
+   margin-left: 40px;
+    
+`;
+
+
 export const CategoryButton = styled(Link)`
 text-decoration: none;
 cursor: pointer;

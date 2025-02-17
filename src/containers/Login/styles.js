@@ -35,7 +35,7 @@ height:100%;
 max-width:50%;
 background: url('${backgroundLogin2}');
 background-color: #1e1e1e;
-background-size: cover;
+background-size: 80%;
 
 p {
     color: #fff;

@@ -1,10 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import * as yup from "yup";
 import { api } from "../../services/api";
 import { toast } from "react-toastify";
-
+import { useUser } from "../../hooks/UserContext";
 
 
 import { Container, 
@@ -13,8 +13,7 @@ import { Container,
      Title, 
      Form, 
      InputContainer,
-     Link,
-
+     
  } from "./styles"
 import Logo from "../../assets/Logo.png"
 
@@ -24,6 +23,7 @@ import { Button } from "../../components/button"
 
 export function Login() {
   const navigate = useNavigate();
+  const {putUserData} = useUser();
 
     const schema = yup
   .object({
@@ -39,23 +39,29 @@ export function Login() {
   } = useForm({
     resolver: yupResolver(schema),
   })
-  const onSubmit = async(data) =>
-    { const {data: {token }} = await toast.promise(
-      api.post('/session', {
-      email: data.email,
-      password: data.password,
-    }),
+  const onSubmit = async(data)=>{
+     const {
+      data: userData} = await toast.promise(
+      api.post('/session',{
+      email:data.email,
+      password:data.password,
+  }),
     { pending: "verificando!",
-      success:{ render(){ setTimeout(() => {navigate('/');}, 2000); 
-       return "Bem vindo(a)!👌";},
-      },
-      error: "Tente novamente!",
+      success: {       
+      render() {
+        setTimeout(()=>{
+           navigate('/')
+          }, 2000);
+        return  "Bem vindo(a)!👌";
     },
-    );
-      
-      
- localStorage.setItem('token', token);
-}
+  },
+  error: 'Email ou Senha Incorretos!',
+
+    },
+  );
+
+putUserData(userData);
+};
 
     return (
         <Container>

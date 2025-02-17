@@ -35,7 +35,7 @@ height:100%;
 max-width:50%;
 background: url('${backgroundLogin2}');
 background-color: #1e1e1e;
-background-size: cover;
+background-size: 80%;
 
 p {
     color: #fff;
@@ -46,13 +46,14 @@ a{
     text-decoration: underline;
     cursor: pointer;
     color: #9558A6;
+    
 }
 }
 `;
 
 export const Title = styled.h2`
 font-family: "Road Rage", serif;
-font-size: 40px;
+font-size: 60px;
 color: #9758a6;
 
 `;

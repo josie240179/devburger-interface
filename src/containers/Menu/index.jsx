@@ -1,25 +1,34 @@
-
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { formatPrice } from "../../utils/formatPrice";
 import { CardProduct } from "../../components/CardProduct";
-import { Container, Banner, CategoryMenu, CategoryButton, ProductsContainer } from "./styles";
-import { useNavigate } from "react-router-dom";
+import { Container, Banner, CategoryMenu, CategoryButton, ProductsContainer, VoltarButton } from "./styles";
+import { useLocation, useNavigate } from "react-router-dom";
+
 
 export function Menu() {
 
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const [activeCategory, setActiveCategory] = useState(0);
+      
+    const {search} = useLocation();
 
-    const navigate = useNavigate;
+    const queryParams = new URLSearchParams(search);
+
+    const [activeCategory, setActiveCategory] = useState(()=>{
+        const categoryId = +queryParams.get('categoria');
+        if(categoryId){
+            return categoryId;
+        }
+        return 0;
+    });
 
 
     useEffect(() => {
         async function loadCategories() {
             const { data } = await api.get('/categories');
-            const newCategories = [{id: 0, name: 'Todas'}, ...data];
+            const newCategories = [{id: 0, name:'Todas'}, ...data];
 
             setCategories(newCategories);
         }
@@ -33,25 +42,24 @@ export function Menu() {
             }));
 
             setProducts(newProducts);
-
-
         }
-        loadCategories(),
-            loadProducts();
 
+        loadCategories();
+        loadProducts();
     }, []);
 
     useEffect(() => {
-        if (activeCategory == 0) {
+        if (activeCategory === 0) {
             setFilteredProducts(products);
         } else {
             const newFilteredProducts = products.filter(
-                (product) => product.category_id = activeCategory
+                (product) => product.category_id === activeCategory
             );
             setFilteredProducts(newFilteredProducts);
         }
-
     }, [products, activeCategory]);
+
+    const navigate = useNavigate();
 
     return (
         <Container>
@@ -63,13 +71,25 @@ export function Menu() {
                     ESTÁ AQUI!
                     <span>Este cardápio está irresistível.</span>
                 </h1>
-
             </Banner>
             <CategoryMenu>
+            <VoltarButton 
+             onClick={() => {
+                navigate(
+                    { pathname: '/', 
+
+                    },
+                    {
+                        replace: true,
+                    },
+                );
+            }}
+
+            >voltar</VoltarButton>
                 {categories.map((category) => (
                     <CategoryButton 
-                    key={category.id}
-                        $isActiveCategory={category.id=== activeCategory}
+                        key={category.id}
+                        $isActiveCategory={category.id === activeCategory}
                         onClick={() => {
                             navigate(
                                 {
@@ -80,14 +100,13 @@ export function Menu() {
                                     replace: true,
                                 },
                             );
-                            setActiveCategory(category.id)
+                            setActiveCategory(category.id);
                         }}
                     >
                         {category.name}
                     </CategoryButton>
                 ))}
             </CategoryMenu>
-
             <ProductsContainer>
                 {filteredProducts.map((product) => (
                     <CardProduct product={product} key={product.id} />

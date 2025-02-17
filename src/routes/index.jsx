@@ -1,13 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Login} from "../containers/Login"
 import { Register } from "../containers/Register";
-import { Home } from "../containers/Home";
-import { Menu } from "../containers/Menu";
-
+import { Home, Login, Menu, Cart } from "../containers";
+import { Header } from "../components/Header";
+import { Footer } from "../components/Footer";
 export const router = createBrowserRouter([
     {
         path: '/',
-        element: <Home />
+        element: (
+            <>
+                <Header />
+                <Home />
+                <Footer />  </>
+        ),
     },
     {
         path: '/Login',
@@ -19,6 +23,17 @@ export const router = createBrowserRouter([
     },
     {
         path: '/Cardapio',
-        element: <Menu />
-    }
+        element:
+            <>
+                <Header />
+                <Menu />
+                <Footer />  </>
+    },
+    {
+        path: '/Carrinho',
+        element:
+            <>
+                <Cart />             
+            </>
+    },
 ]);
